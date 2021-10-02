@@ -1,10 +1,13 @@
-import React from 'react';
-import { Counter } from './features/counter/Counter';
-
+import React from "react";
+import { Routes, Route } from "react-router-dom";
+import SignUp from "./features/signup/SignUp";
 function App() {
   return (
     <div className="App">
-        <Counter />
+      Hello World
+      <Routes>
+        <Route path="/signup" element={<SignUp />} />
+      </Routes>
     </div>
   );
 }
