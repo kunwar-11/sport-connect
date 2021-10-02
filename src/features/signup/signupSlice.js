@@ -1,23 +1,25 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-const initialState = { signedUp: false, status: "idle" };
-import { API_URL } from "../../../util";
+import axios from "axios";
+import { API_URL } from "../../util";
 
-const signUpUser = createAsyncThunk(
+const initialState = { signedUp: false, status: "idle" };
+
+export const signUpUser = createAsyncThunk(
   "signup/signUpUser",
   async (
     { firstName, lastName, userName, email, password },
     { fulfillWithValue, rejectWithValue }
   ) => {
     try {
-      const { data } = await axios.post(`${API_URL}/auth/signup`, {
+      const { data } = await axios.post(`${API_URL}auth/signup`, {
         firstName,
         lastName,
-        userName,
         userName,
         email,
         password,
       });
       if (data.success) {
+        console.log(data);
         return fulfillWithValue(data.success);
       }
     } catch (error) {
@@ -37,7 +39,7 @@ export const signupSlice = createSlice({
     },
     [signUpUser.fulfilled]: (state, action) => {
       if (action.payload) {
-        state.status = "fulfulled";
+        state.status = "fulfilled";
         state.signedUp = action.payload;
       }
     },
@@ -47,4 +49,4 @@ export const signupSlice = createSlice({
   },
 });
 
-export default signupSlice.reducers;
+export default signupSlice.reducer;
