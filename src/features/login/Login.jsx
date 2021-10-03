@@ -20,14 +20,18 @@ export const Login = () => {
 
   const loginHandler = async (e) => {
     e.preventDefault();
-    if (loginValidation(userDetails, setError)) {
-      await dispatch(
-        logInUser({
-          userName: userDetails?.email,
-          password: userDetails?.password,
-        })
-      );
-      console.log("logged In");
+    try {
+      if (loginValidation(userDetails, setError)) {
+        const resp = await dispatch(
+          logInUser({
+            userName: userDetails?.email,
+            password: userDetails?.password,
+          })
+        ).unwrap();
+        console.log("here", resp);
+      }
+    } catch (rejectedValueOrSerializedError) {
+      console.log(rejectedValueOrSerializedError?.response);
     }
   };
 
