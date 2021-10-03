@@ -34,14 +34,15 @@ const SignUp = () => {
 
   return (
     <form
-      className="flex flex-col max-w-sm rounded-md shadow mx-1 sm:mx-auto"
+      className="flex flex-col max-w-lg rounded-md shadow-md mx-1 sm:mx-auto p-4 align-middle"
       onSubmit={signUpHandler}
     >
       <div className="text-center">
-        <h3>Sign Up</h3>
+        <h1 className="text-3xl">Sign Up</h1>
       </div>
-      <div>
+      <div className="flex flex-col">
         <input
+          className="my-2 sm:my-3 p-1 sm:p-2 rounded border-2 border-solid"
           type="text"
           placeholder="Enter your first name"
           value={userDetails?.firstName}
@@ -51,8 +52,9 @@ const SignUp = () => {
         />
         <small className="text-red-500">{error.firstNameError}</small>
       </div>
-      <div>
+      <div className="flex flex-col">
         <input
+          className="my-2 sm:my-3 p-1 sm:p-2 rounded border-2 border-solid"
           type="text"
           placeholder="Enter your last name"
           value={userDetails?.lastName}
@@ -62,8 +64,9 @@ const SignUp = () => {
         />
         <small className="text-red-500">{error.lastNameError}</small>
       </div>
-      <div>
+      <div className="flex flex-col">
         <input
+          className="my-2 sm:my-3 p-1 sm:p-2 rounded border-2 border-solid"
           type="text"
           placeholder="enter your user name"
           value={userDetails?.userName}
@@ -73,8 +76,9 @@ const SignUp = () => {
         />
         <small className="text-red-500">{error.userNameError}</small>
       </div>
-      <div>
+      <div className="flex flex-col">
         <input
+          className="my-2 sm:my-3 p-1 sm:p-2 rounded border-2 border-solid"
           type="text"
           placeholder="enter your email"
           value={userDetails?.email}
@@ -84,9 +88,10 @@ const SignUp = () => {
         />
         <small className="text-red-500">{error.emailError}</small>
       </div>
-      <div>
-        <div>
+      <div className="flex flex-row justify-center">
+        <div className="flex flex-col  w-full">
           <input
+            className="my-2 sm:my-3 p-1 sm:p-2 rounded border-2 border-solid"
             type={showPassword ? "text" : "password"}
             placeholder="enter your password"
             value={userDetails?.password}
@@ -96,13 +101,17 @@ const SignUp = () => {
           />
           <small className="text-red-500">{error.passwordError}</small>
         </div>
-        <div onClick={() => setShowPassword((prev) => !prev)}>
+        <div
+          className="p-2 sm:p-4"
+          onClick={() => setShowPassword((prev) => !prev)}
+        >
           {showPassword ? <VisibilityOff /> : <Visibility />}
         </div>
       </div>
-      <div>
-        <div>
+      <div className="flex flex-row justify-center">
+        <div className="flex flex-col w-full">
           <input
+            className="my-2 sm:my-3 p-1 sm:p-2 rounded border-2 border-solid"
             type={showConfirmPassword ? "text" : "password"}
             placeholder="re enter your password"
             value={userDetails?.confirmPassword}
@@ -115,11 +124,20 @@ const SignUp = () => {
           />
           <small className="text-red-500">{error.confirmPasswordError}</small>
         </div>
-        <div onClick={() => setShowConfirmPassword((prev) => !prev)}>
+        <div
+          className="p-2 sm:p-4"
+          onClick={() => setShowConfirmPassword((prev) => !prev)}
+        >
           {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
         </div>
       </div>
-      <button type="submit">Sign IN</button>
+      <p className="text-center p-2">already have an account ? Login</p>
+      <button
+        type="submit"
+        className="m-2 p-1 border-double border-2 shadow border-gray"
+      >
+        Sign IN
+      </button>
     </form>
   );
 };
