@@ -3,8 +3,10 @@ import { VisibilityOff, Visibility } from "@material-ui/icons";
 import { signUpValidation } from "../../util";
 import { useDispatch, useSelector } from "react-redux";
 import { signUpUser } from "./signupSlice";
-const SignUp = () => {
+import { useNavigate } from "react-router";
+export const SignUp = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const isSignedUp = useSelector((state) => state.signup);
   const [userDetails, setUserDetails] = useState({
     firstName: "",
@@ -29,7 +31,7 @@ const SignUp = () => {
     e.preventDefault();
     if (signUpValidation(userDetails, setError)) {
       await dispatch(signUpUser(userDetails));
-      console.log("done");
+      navigate("/login");
     }
   };
 
@@ -143,5 +145,3 @@ const SignUp = () => {
     </form>
   );
 };
-
-export default SignUp;
