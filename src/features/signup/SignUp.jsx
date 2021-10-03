@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { VisibilityOff, Visibility } from "@material-ui/icons";
 import { signUpValidation } from "../../util";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { signUpUser } from "./signupSlice";
 const SignUp = () => {
   const dispatch = useDispatch();
+  const isSignedUp = useSelector((state) => state.signup);
   const [userDetails, setUserDetails] = useState({
     firstName: "",
     lastName: "",
@@ -42,7 +43,7 @@ const SignUp = () => {
       </div>
       <div className="flex flex-col">
         <input
-          className="my-2 sm:my-3 p-1 sm:p-2 rounded border-2 border-solid"
+          className="my-1.5 sm:my-2.5 p-1 sm:p-1.5 rounded border-2 border-solid"
           type="text"
           placeholder="Enter your first name"
           value={userDetails?.firstName}
@@ -54,7 +55,7 @@ const SignUp = () => {
       </div>
       <div className="flex flex-col">
         <input
-          className="my-2 sm:my-3 p-1 sm:p-2 rounded border-2 border-solid"
+          className="my-1.5 sm:my-2.5.5 p-1 sm:1.5-1.5 rounded border-2 border-solid"
           type="text"
           placeholder="Enter your last name"
           value={userDetails?.lastName}
@@ -66,7 +67,7 @@ const SignUp = () => {
       </div>
       <div className="flex flex-col">
         <input
-          className="my-2 sm:my-3 p-1 sm:p-2 rounded border-2 border-solid"
+          className="my-1.5 sm:my-2.5 p-1 sm:p-1.5 rounded border-2 border-solid"
           type="text"
           placeholder="enter your user name"
           value={userDetails?.userName}
@@ -78,7 +79,7 @@ const SignUp = () => {
       </div>
       <div className="flex flex-col">
         <input
-          className="my-2 sm:my-3 p-1 sm:p-2 rounded border-2 border-solid"
+          className="my-1.5 sm:my-2.5 p-1 sm:p-1.5 rounded border-2 border-solid"
           type="text"
           placeholder="enter your email"
           value={userDetails?.email}
@@ -91,7 +92,7 @@ const SignUp = () => {
       <div className="flex flex-row justify-center">
         <div className="flex flex-col  w-full">
           <input
-            className="my-2 sm:my-3 p-1 sm:p-2 rounded border-2 border-solid"
+            className="my-1.5 sm:my-2.5 p-1 sm:p-1.5 rounded border-2 border-solid"
             type={showPassword ? "text" : "password"}
             placeholder="enter your password"
             value={userDetails?.password}
@@ -111,7 +112,7 @@ const SignUp = () => {
       <div className="flex flex-row justify-center">
         <div className="flex flex-col w-full">
           <input
-            className="my-2 sm:my-3 p-1 sm:p-2 rounded border-2 border-solid"
+            className="my-1.5 sm:my-2.5 p-1 sm:p-1.5 rounded border-2 border-solid"
             type={showConfirmPassword ? "text" : "password"}
             placeholder="re enter your password"
             value={userDetails?.confirmPassword}
@@ -134,9 +135,10 @@ const SignUp = () => {
       <p className="text-center p-2">already have an account ? Login</p>
       <button
         type="submit"
+        disabled={isSignedUp.status === "loading"}
         className="m-2 p-1 border-double border-2 shadow border-gray"
       >
-        Sign IN
+        {isSignedUp.status === "loading" ? "siginig In..." : "sign IN"}
       </button>
     </form>
   );
