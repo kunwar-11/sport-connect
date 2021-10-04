@@ -41,11 +41,13 @@ export const SignUp = () => {
       onSubmit={signUpHandler}
     >
       <div className="text-center">
-        <h1 className="text-3xl">Sign Up</h1>
+        <h1 className="text-3xl">
+          Sign <span className="text-purple-600">UP</span>
+        </h1>
       </div>
       <div className="flex flex-col">
         <input
-          className="my-1.5 sm:my-2.5 p-1 sm:p-1.5 rounded border-2 border-solid"
+          className="my-1.5 sm:my-2.5 p-1 sm:p-1.5 rounded border-2 border-solid border-purple-500"
           type="text"
           placeholder="Enter your first name"
           value={userDetails?.firstName}
@@ -57,7 +59,7 @@ export const SignUp = () => {
       </div>
       <div className="flex flex-col">
         <input
-          className="my-1.5 sm:my-2.5.5 p-1 sm:1.5-1.5 rounded border-2 border-solid"
+          className="my-1.5 sm:my-2.5.5 p-1 sm:1.5-1.5 rounded border-2 border-solid border-purple-500"
           type="text"
           placeholder="Enter your last name"
           value={userDetails?.lastName}
@@ -69,7 +71,7 @@ export const SignUp = () => {
       </div>
       <div className="flex flex-col">
         <input
-          className="my-1.5 sm:my-2.5 p-1 sm:p-1.5 rounded border-2 border-solid"
+          className="my-1.5 sm:my-2.5 p-1 sm:p-1.5 rounded border-2 border-solid border-purple-500"
           type="text"
           placeholder="enter your user name"
           value={userDetails?.userName}
@@ -81,7 +83,7 @@ export const SignUp = () => {
       </div>
       <div className="flex flex-col">
         <input
-          className="my-1.5 sm:my-2.5 p-1 sm:p-1.5 rounded border-2 border-solid"
+          className="my-1.5 sm:my-2.5 p-1 sm:p-1.5 rounded border-2 border-solid border-purple-500"
           type="text"
           placeholder="enter your email"
           value={userDetails?.email}
@@ -94,7 +96,7 @@ export const SignUp = () => {
       <div className="flex flex-row justify-center">
         <div className="flex flex-col  w-full">
           <input
-            className="my-1.5 sm:my-2.5 p-1 sm:p-1.5 rounded border-2 border-solid"
+            className="my-1.5 sm:my-2.5 p-1 sm:p-1.5 rounded border-2 border-solid border-purple-500"
             type={showPassword ? "text" : "password"}
             placeholder="enter your password"
             value={userDetails?.password}
@@ -114,7 +116,7 @@ export const SignUp = () => {
       <div className="flex flex-row justify-center">
         <div className="flex flex-col w-full">
           <input
-            className="my-1.5 sm:my-2.5 p-1 sm:p-1.5 rounded border-2 border-solid"
+            className="my-1.5 sm:my-2.5 p-1 sm:p-1.5 rounded border-2 border-solid border-purple-500"
             type={showConfirmPassword ? "text" : "password"}
             placeholder="re enter your password"
             value={userDetails?.confirmPassword}
@@ -134,14 +136,24 @@ export const SignUp = () => {
           {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
         </div>
       </div>
-      <p className="text-center p-2">already have an account ? Login</p>
       <button
         type="submit"
         disabled={isSignedUp.status === "loading"}
-        className="m-2 p-1 border-double border-2 shadow border-gray"
+        className={`m-2 p-1 border-double border-2 shadow ${
+          isSignedUp.status === "loading"
+            ? "border-gray-200"
+            : "border-purple-500"
+        }`}
       >
-        {isSignedUp.status === "loading" ? "siginig In..." : "sign IN"}
+        {isSignedUp.status === "loading" ? (
+          <span className="text-gray-400">Signing In...</span>
+        ) : (
+          "sign IN"
+        )}
       </button>
+      <p className="text-center p-2">
+        already have an account ? <span className="text-purple-600">Login</span>
+      </p>
     </form>
   );
 };

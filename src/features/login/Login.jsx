@@ -41,11 +41,13 @@ export const Login = () => {
       onSubmit={loginHandler}
     >
       <div className="text-center">
-        <h1 className="text-3xl">Log IN</h1>
+        <h1 className="text-3xl">
+          Log <span className="text-purple-600">IN</span>
+        </h1>
       </div>
       <div className="flex flex-col">
         <input
-          className="my-1.5 sm:my-2.5 p-1 sm:p-1.5 rounded border-2 border-solid"
+          className="my-1.5 sm:my-2.5 p-1 sm:p-1.5 rounded border-2 border-solid border-purple-500"
           type="text"
           placeholder="enter your Email"
           value={userDetails?.email}
@@ -58,7 +60,7 @@ export const Login = () => {
       <div className="flex flex-row justify-center">
         <div className="flex flex-col  w-full">
           <input
-            className="my-1.5 sm:my-2.5 p-1 sm:p-1.5 rounded border-2 border-solid"
+            className="my-1.5 sm:my-2.5 p-1 sm:p-1.5 rounded border-2 border-solid border-purple-500"
             type={showPassword ? "text" : "password"}
             placeholder="enter your password"
             value={userDetails?.password}
@@ -78,10 +80,22 @@ export const Login = () => {
       <button
         type="submit"
         disabled={isLoggedIn.status === "loading"}
-        className="m-2 p-1 border-double border-2 shadow border-gray"
+        className={`m-2 p-1 border-double border-2 shadow ${
+          isLoggedIn.status === "loading"
+            ? "border-gray-200"
+            : "border-purple-500"
+        }`}
       >
-        {isLoggedIn.status === "loading" ? "logging In..." : "log IN"}
+        {isLoggedIn.status === "loading" ? (
+          <span className="text-gray-400">logging In...</span>
+        ) : (
+          "log IN"
+        )}
       </button>
+      <small className="text-center small-2">
+        already have an account ?{" "}
+        <span className="text-purple-600">Sign Up</span>
+      </small>
     </form>
   );
 };
