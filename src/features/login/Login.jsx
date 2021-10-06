@@ -3,7 +3,7 @@ import { VisibilityOff, Visibility } from "@material-ui/icons";
 import { useDispatch, useSelector } from "react-redux";
 import { logInUser } from "./loginSlice";
 import { loginValidation } from "../../util";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 export const Login = () => {
   const isLoggedIn = useSelector((state) => state.login);
   const [userDetails, setUserDetails] = useState({

@@ -3,7 +3,7 @@ import { VisibilityOff, Visibility } from "@material-ui/icons";
 import { signUpValidation } from "../../util";
 import { useDispatch, useSelector } from "react-redux";
 import { signUpUser } from "./signupSlice";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 export const SignUp = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -146,9 +146,9 @@ export const SignUp = () => {
         }`}
       >
         {isSignedUp.status === "loading" ? (
-          <span className="text-gray-400">Signing In...</span>
+          <span className="text-gray-400">Signing Up...</span>
         ) : (
-          "sign IN"
+          "Sign Up"
         )}
       </button>
       <p className="text-center p-2">

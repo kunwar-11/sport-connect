@@ -54,6 +54,7 @@ export const loginSlice = createSlice({
           JSON.stringify({
             userId: action.payload?.userId,
             token: action.payload?.token,
+            profilePicture: action.payload?.profilePicture,
             login: true,
           })
         );

@@ -1,3 +1,6 @@
+import { useSelector } from "react-redux";
+import { Route, Navigate } from "react-router-dom";
+
 export const API_URL = "https://api-sport-connect.herokuapp.com/";
 
 export const signUpValidation = (credentials, setError) => {
@@ -86,4 +89,14 @@ export const loginValidation = (userDetails, setError) => {
   }
 
   return valid;
+};
+
+export const PrivateRoute = ({ path, ...rest }) => {
+  const login = useSelector((state) => state.login);
+  console.log(login);
+  return login.login ? (
+    <Route path={path} {...rest} />
+  ) : (
+    <Navigate to="/login" replace state={{ from: path }} />
+  );
 };
