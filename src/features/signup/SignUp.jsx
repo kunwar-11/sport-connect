@@ -37,7 +37,7 @@ export const SignUp = () => {
 
   return (
     <form
-      className="flex flex-col max-w-lg rounded-md shadow-md mx-1 sm:mx-auto p-4 align-middle"
+      className="flex flex-col max-w-lg rounded-md shadow-md mx-4 my-16 sm:my-24 sm:mx-auto p-4 align-middle border-t-4 border-l-4 border-purple-500"
       onSubmit={signUpHandler}
     >
       <div className="text-center">

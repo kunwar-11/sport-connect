@@ -3,9 +3,10 @@ import { VisibilityOff, Visibility } from "@material-ui/icons";
 import { useDispatch, useSelector } from "react-redux";
 import { logInUser } from "./loginSlice";
 import { loginValidation } from "../../util";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 export const Login = () => {
   const isLoggedIn = useSelector((state) => state.login);
+  const state = useLocation();
   const [userDetails, setUserDetails] = useState({
     email: "",
     password: "",
@@ -28,7 +29,9 @@ export const Login = () => {
             password: userDetails?.password,
           })
         ).unwrap();
-        console.log("here", resp);
+        if (resp?.token) {
+          navigate(state?.from ? state?.from : "/");
+        }
       }
     } catch (rejectedValueOrSerializedError) {
       console.log(rejectedValueOrSerializedError?.response);
@@ -37,7 +40,7 @@ export const Login = () => {
 
   return (
     <form
-      className="flex flex-col max-w-lg rounded-md shadow-md mx-1 sm:mx-auto p-4 align-middle"
+      className="flex flex-col max-w-lg rounded-md shadow-md mx-4 my-20 sm:my-28 sm:mx-auto p-4 align-middle border-t-4 border-l-4 border-purple-500"
       onSubmit={loginHandler}
     >
       <div className="text-center">

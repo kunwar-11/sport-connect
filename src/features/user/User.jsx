@@ -1,5 +1,11 @@
 import React from "react";
+import { Navbar } from "../../components";
 
 export const User = () => {
-  return <div>user</div>;
+  return (
+    <div>
+      <Navbar />
+      user
+    </div>
+  );
 };

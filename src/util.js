@@ -93,7 +93,6 @@ export const loginValidation = (userDetails, setError) => {
 
 export const PrivateRoute = ({ path, ...rest }) => {
   const login = useSelector((state) => state.login);
-  console.log(login);
   return login.login ? (
     <Route path={path} {...rest} />
   ) : (
