@@ -1,4 +1,4 @@
-import { SearchOutlined } from "@material-ui/icons";
+import { Notifications, SearchOutlined } from "@material-ui/icons";
 import React from "react";
 import { Link } from "react-router-dom";
 
@@ -24,6 +24,11 @@ export const Navbar = () => {
         <div className="sm:hidden cursor-pointer">
           <SearchOutlined style={{ color: "white", marginRight: "0.5rem" }} />
         </div>
+        <Link to="/notification">
+          <div>
+            <Notifications style={{ color: "white", marginRight: "0.5rem" }} />
+          </div>
+        </Link>
         <Link to="/user">
           <div>
             <img
@@ -31,8 +36,8 @@ export const Navbar = () => {
                 JSON.parse(localStorage?.getItem("loggedInUser"))
                   ?.profilePicture
               }
-              alt=""
-              className="rounded-full object-contain w-6 sm:w-8"
+              alt="user profile"
+              className="rounded-full object-contain w-6 sm:w-7"
             />
           </div>
         </Link>

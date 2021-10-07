@@ -29,9 +29,15 @@ export const SignUp = () => {
 
   const signUpHandler = async (e) => {
     e.preventDefault();
-    if (signUpValidation(userDetails, setError)) {
-      await dispatch(signUpUser(userDetails));
-      navigate("/login");
+    try {
+      if (signUpValidation(userDetails, setError)) {
+        const resp = await dispatch(signUpUser(userDetails)).unwrap();
+        if (resp) {
+          navigate("/login");
+        }
+      }
+    } catch (rejectedValueOrSerializedError) {
+      console.log(rejectedValueOrSerializedError?.response);
     }
   };
 

@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
 import { Route, Navigate } from "react-router-dom";
-
+import axios from "axios";
 export const API_URL = "https://api-sport-connect.herokuapp.com/";
 
 export const signUpValidation = (credentials, setError) => {
@@ -98,4 +98,11 @@ export const PrivateRoute = ({ path, ...rest }) => {
   ) : (
     <Navigate to="/login" replace state={{ from: path }} />
   );
+};
+
+export const setupAuthHeaderForServiceCalls = (token) => {
+  if (token) {
+    return (axios.defaults.headers.common["Authorization"] = token);
+  }
+  delete axios.defaults.headers.common["Authorization"];
 };
