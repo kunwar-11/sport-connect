@@ -11,6 +11,7 @@ const initialState = {
   followers: null,
   following: null,
   status: "idle",
+  updateProfileStatus: "idle",
 };
 
 export const getLoggedInUserDetails = createAsyncThunk(
@@ -28,6 +29,37 @@ export const getLoggedInUserDetails = createAsyncThunk(
       }
     } catch (error) {
       console.log(error);
+    }
+  }
+);
+
+export const updateLoggedInUserProfile = createAsyncThunk(
+  "user/updateLoggedInUserProfile",
+  async (
+    { firstName, lastName, userName, profilePicture },
+    { fulfillWithValue, rejectWithValue }
+  ) => {
+    try {
+      const { status, data } = await axios.post(
+        `${API_URL}user`,
+        {
+          firstName,
+          lastName,
+          userName,
+          profilePicture,
+        },
+        {
+          headers: {
+            authorization: JSON.parse(localStorage?.getItem("loggedInUser"))
+              ?.token,
+          },
+        }
+      );
+      if (status === 200) {
+        return fulfillWithValue(data.user);
+      }
+    } catch (error) {
+      return rejectWithValue(error);
     }
   }
 );
@@ -52,6 +84,27 @@ export const userSlice = createSlice({
     },
     [getLoggedInUserDetails.rejected]: (state) => {
       state.status = "rejected";
+    },
+    [updateLoggedInUserProfile.pending]: (state) => {
+      state.updateProfileStatus = "loading";
+    },
+    [updateLoggedInUserProfile.fulfilled]: (state, action) => {
+      state.firstName = action.payload.firstName;
+      state.lastName = action.payload.lastName;
+      state.userName = action.payload.userName;
+      state.profilePicture = action.payload.profilePicture;
+      const data = JSON.parse(localStorage?.getItem("loggedInUser"));
+      localStorage?.setItem(
+        "loggedInUser",
+        JSON.stringify({
+          ...data,
+          profilePicture: action.payload?.profilePicture,
+        })
+      );
+      state.updateProfileStatus = "fullfilled";
+    },
+    [updateLoggedInUserProfile.rejected]: (state) => {
+      state.updateProfileStatus = "rejected";
     },
   },
 });
