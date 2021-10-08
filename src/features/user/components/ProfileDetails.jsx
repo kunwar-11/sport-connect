@@ -35,11 +35,9 @@ export const ProfileDetails = ({ user }) => {
           </span>
         </h3>
       </div>
-      <div className="ml-1.5 sm:ml-2.5 mb-2 sm:mb-4">
-        <h3 className="text-lg sm:text-2xl font-medium">
-          {user?.firstName} {user?.lastName}
-        </h3>
-      </div>
+      <h3 className="text-lg sm:text-2xl font-medium ml-1.5 sm:ml-2.5 mb-2 sm:mb-4">
+        {user?.firstName} {user?.lastName}
+      </h3>
     </div>
   );
 };

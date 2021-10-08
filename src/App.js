@@ -1,6 +1,6 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
-import { Feeds, Login, SignUp, User } from "./features";
+import { EditProfile, Feeds, Login, SignUp, User } from "./features";
 import { PrivateRoute } from "./util";
 function App() {
   return (
@@ -10,6 +10,7 @@ function App() {
         <Route path="/signup" element={<SignUp />} />
         <Route path="/login" element={<Login />} />
         <PrivateRoute path="/user" element={<User />} />
+        <PrivateRoute path="/user/editProfile" element={<EditProfile />} />
       </Routes>
     </div>
   );
