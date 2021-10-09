@@ -1,20 +1,43 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { Navbar } from "../../../components";
-import { updateLoggedInUserProfile } from "../userSlice";
+import {
+  getLoggedInUserDetails,
+  updateLoggedInUserProfile,
+} from "../userSlice";
 export const EditProfile = () => {
   const [uplaodStatus, setUploadStatus] = useState("idle");
   const user = useSelector((state) => state?.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [details, setDetails] = useState({
-    firstName: user?.firstName,
-    lastName: user?.lastName,
-    userName: user?.userName,
-    profilePicture: user?.profilePicture,
+    firstName: user?.firstName || null,
+    lastName: user?.lastName || null,
+    userName: user?.userName || null,
+    profilePicture: user?.profilePicture || null,
   });
   const [image, setImage] = useState("");
+
+  useEffect(() => {
+    if (user?.status === "idle") {
+      (async () => {
+        try {
+          const resp = await dispatch(getLoggedInUserDetails()).unwrap();
+          setDetails((prev) => ({
+            ...prev,
+            firstName: resp?.firstName,
+            lastName: resp?.lastName,
+            userName: resp?.userName,
+            profilePicture: resp?.profilePicture,
+          }));
+        } catch (error) {
+          console.log(error?.reponse);
+        }
+      })();
+    }
+  }, [dispatch, user?.status]);
+
   const uploadImage = (e) => {
     e.preventDefault();
     const data = new FormData();
@@ -86,7 +109,7 @@ export const EditProfile = () => {
             <input
               className="my-1.5 sm:my-2.5.5 p-1 sm:1.5-1.5 rounded border-2 border-solid border-purple-500"
               type="text"
-              value={details?.firstName}
+              value={(details?.firstName && details?.firstName) || ""}
               onChange={(e) =>
                 setDetails((prev) => ({ ...prev, firstName: e.target.value }))
               }
@@ -94,7 +117,7 @@ export const EditProfile = () => {
             <input
               className="my-1.5 sm:my-2.5.5 p-1 sm:1.5-1.5 rounded border-2 border-solid border-purple-500"
               type="text"
-              value={details?.lastName}
+              value={(details?.lastName && details?.lastName) || ""}
               onChange={(e) =>
                 setDetails((prev) => ({ ...prev, lastName: e.target.value }))
               }
@@ -102,7 +125,7 @@ export const EditProfile = () => {
             <input
               className="my-1.5 sm:my-2.5.5 p-1 sm:1.5-1.5 rounded border-2 border-solid border-purple-500"
               type="text"
-              value={details?.userName}
+              value={(details?.userName && details?.userName) || ""}
               onChange={(e) =>
                 setDetails((prev) => ({ ...prev, userName: e.target.value }))
               }

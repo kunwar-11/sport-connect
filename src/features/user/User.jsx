@@ -12,7 +12,8 @@ export const User = () => {
     if (user?.status === "idle") {
       (async () => {
         try {
-          await dispatch(getLoggedInUserDetails());
+          const resp = await dispatch(getLoggedInUserDetails()).unwrap();
+          console.log(resp);
         } catch (error) {
           console.log(error?.reponse);
         }
@@ -21,7 +22,7 @@ export const User = () => {
   }, [dispatch, user?.status]);
   //user?.firstName && console.log(user);
   return (
-    <div>
+    <>
       <Navbar />
       <div className="sm:max-w-screen-sm sm:m-auto">
         {user?.firstName && (
@@ -34,6 +35,6 @@ export const User = () => {
           </div>
         )}
       </div>
-    </div>
+    </>
   );
 };

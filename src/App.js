@@ -1,6 +1,14 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
-import { EditProfile, Feeds, Login, SignUp, User } from "./features";
+import {
+  EditProfile,
+  Feeds,
+  Followers,
+  Following,
+  Login,
+  SignUp,
+  User,
+} from "./features";
 import { PrivateRoute } from "./util";
 function App() {
   return (
@@ -11,6 +19,8 @@ function App() {
         <Route path="/login" element={<Login />} />
         <PrivateRoute path="/user" element={<User />} />
         <PrivateRoute path="/user/editProfile" element={<EditProfile />} />
+        <PrivateRoute path="/user/following" element={<Following />} />
+        <PrivateRoute path="/user/followers" element={<Followers />} />
       </Routes>
     </div>
   );
