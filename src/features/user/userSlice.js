@@ -64,6 +64,56 @@ export const updateLoggedInUserProfile = createAsyncThunk(
   }
 );
 
+export const unfollowAnyUser = createAsyncThunk(
+  "user/unfollowAnyUser",
+  async (userId, { fulfillWithValue, rejectWithValue }) => {
+    try {
+      const { data, status } = await axios.post(
+        `${API_URL}user/unfollow`,
+        {
+          unFollowingID: userId,
+        },
+        {
+          headers: {
+            authorization: JSON.parse(localStorage?.getItem("loggedInUser"))
+              ?.token,
+          },
+        }
+      );
+      if (status === 201) {
+        return fulfillWithValue(data.unFollowingID);
+      }
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
+export const removeUserWhoFollows = createAsyncThunk(
+  "user/removeUserWhoFollows",
+  async (userId, { fulfillWithValue, rejectWithValue }) => {
+    try {
+      const { data, status } = await axios.post(
+        `http://localhost:8000/user/removefollower`,
+        {
+          removedUserId: userId,
+        },
+        {
+          headers: {
+            authorization: JSON.parse(localStorage?.getItem("loggedInUser"))
+              ?.token,
+          },
+        }
+      );
+      if (status === 201) {
+        return fulfillWithValue(data?.removedUserId);
+      }
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
 export const userSlice = createSlice({
   name: "user",
   initialState,
@@ -105,6 +155,22 @@ export const userSlice = createSlice({
     },
     [updateLoggedInUserProfile.rejected]: (state) => {
       state.updateProfileStatus = "rejected";
+    },
+    [unfollowAnyUser.fulfilled]: (state, action) => {
+      const index = state.following.findIndex(
+        (each) => each._id === action.payload
+      );
+      if (index > -1) {
+        state.following.splice(index, 1);
+      }
+    },
+    [removeUserWhoFollows.fulfilled]: (state, action) => {
+      const index = state.followers.findIndex(
+        (each) => each._id === action.payload
+      );
+      if (index > -1) {
+        state.followers.splice(index, 1);
+      }
     },
   },
 });
