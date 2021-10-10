@@ -38,17 +38,18 @@ export const Following = () => {
     <>
       <Navbar />
       <div className="sm:max-w-screen-sm sm:m-auto">
+        <h1 className="text-3xl text-center mb-3">Following</h1>
         {user?.following &&
           user?.following.length > 0 &&
           user?.following?.map((each, index) => (
             <div
               key={each._id}
-              className={`flex items-center justify-evenly ${
+              className={`flex items-center justify-between pl-4 pr-4 sm:pr-8 sm:pl-8 pt-3 pb-3 ${
                 index % 2 !== 0 ? "bg-gray-100" : "bg-transparent"
               }`}
             >
               <Link to={`/user/${each._id}`}>
-                <div className="flex items-center">
+                <div className="flex items-center justify-evenly">
                   <img
                     src={each?.profilePicture}
                     className="rounded-full w-12 sm:w-16"

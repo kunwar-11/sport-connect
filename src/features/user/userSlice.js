@@ -94,7 +94,7 @@ export const removeUserWhoFollows = createAsyncThunk(
   async (userId, { fulfillWithValue, rejectWithValue }) => {
     try {
       const { data, status } = await axios.post(
-        `http://localhost:8000/user/removefollower`,
+        `${API_URL}user/removefollower`,
         {
           removedUserId: userId,
         },

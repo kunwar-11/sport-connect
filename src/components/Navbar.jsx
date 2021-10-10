@@ -6,9 +6,11 @@ export const Navbar = () => {
   return (
     <nav className="flex flex-row justify-between bg-purple-500 px-5 sm:px-8 py-4 shadow-xl sticky top-0 left-0 mb-6 rounded-b-md items-center z-20">
       <div className="cursor-pointer">
-        <h2 className="font-bold text-xl sm:text-2xl text-white">
-          SportConnect
-        </h2>
+        <Link to="/">
+          <h2 className="font-bold text-xl sm:text-2xl text-white">
+            SportConnect
+          </h2>
+        </Link>
       </div>
       <div className="hidden sm:flex flex-row items-center w-3/5 mx-4">
         <div>
