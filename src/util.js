@@ -106,3 +106,10 @@ export const setupAuthHeaderForServiceCalls = (token) => {
   }
   delete axios.defaults.headers.common["Authorization"];
 };
+
+export const isLiked = (likeArr, userId) => {
+  if (likeArr.some((each) => each._id === userId)) {
+    return true;
+  }
+  return false;
+};
