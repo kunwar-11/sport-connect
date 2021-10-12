@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { commentPostButtonClicked } from "../feedsSlice";
 
-export const CommentForm = ({ setShowTextField, postId }) => {
+export const CommentForm = ({ setShowTextField, postId, from }) => {
   const [comment, setComment] = useState("");
   const [error, setError] = useState("");
   const dispatch = useDispatch();
@@ -11,7 +11,7 @@ export const CommentForm = ({ setShowTextField, postId }) => {
     if (comment.trim()) {
       try {
         const resp = await dispatch(
-          commentPostButtonClicked({ text: comment, postId })
+          commentPostButtonClicked({ text: comment, postId, from })
         ).unwrap();
         console.log(resp);
         setShowTextField("");

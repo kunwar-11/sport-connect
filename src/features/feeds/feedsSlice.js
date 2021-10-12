@@ -4,8 +4,10 @@ import { API_URL } from "../../util";
 const initialState = {
   feeds: null,
   suggestedPosts: null,
+  suggestedUsers: null,
   feedStatus: "idle",
   suggestedPostStatus: "idle",
+  suggestedUserStatus: "idle",
   likedOrUnliked: "idle",
 };
 
@@ -49,9 +51,32 @@ export const getSuggestedPosts = createAsyncThunk(
   }
 );
 
+export const getSuggestedUser = createAsyncThunk(
+  "feed/getSuggestedUser",
+  async () => {
+    try {
+      const { data, status } = await axios.get(
+        `${API_URL}user/suggestedusers`,
+        {
+          headers: {
+            authorization: JSON.parse(localStorage?.getItem("loggedInUser"))
+              ?.token,
+          },
+        }
+      );
+      console.log(data);
+      if (status === 200) {
+        return data;
+      }
+    } catch (error) {
+      return error;
+    }
+  }
+);
+
 export const likeButtonPressed = createAsyncThunk(
   "feed/likeButtonPressed",
-  async (postId, { fulfillWithValue, rejectWithValue }) => {
+  async ({ postId, from }, { fulfillWithValue, rejectWithValue }) => {
     try {
       const { data, status } = await axios.post(
         `${API_URL}post/${postId}/updateLike`,
@@ -65,7 +90,7 @@ export const likeButtonPressed = createAsyncThunk(
       );
       if (status === 201) {
         console.log(data);
-        return fulfillWithValue(data);
+        return fulfillWithValue({ ...data, from });
       }
     } catch (error) {
       return rejectWithValue(error);
@@ -75,7 +100,7 @@ export const likeButtonPressed = createAsyncThunk(
 
 export const commentPostButtonClicked = createAsyncThunk(
   "feed/commentPostButtonClicked",
-  async ({ text, postId }, { fulfillWithValue, rejectWithValue }) => {
+  async ({ text, postId, from }, { fulfillWithValue, rejectWithValue }) => {
     try {
       const { data, status } = await axios.post(
         `${API_URL}post/${postId}/addComment`,
@@ -91,7 +116,7 @@ export const commentPostButtonClicked = createAsyncThunk(
       );
       if (status === 201) {
         console.log(data);
-        return fulfillWithValue(data);
+        return fulfillWithValue({ ...data, from });
       }
     } catch (error) {
       return rejectWithValue(error);
@@ -129,30 +154,68 @@ export const feedsSlice = createSlice({
     [getSuggestedPosts.rejected]: (state) => {
       state.suggestedPostStatus = "rejected";
     },
+    [getSuggestedUser.pending]: (state) => {
+      state.suggestedUserStatus = "pending";
+    },
+    [getSuggestedUser.fulfilled]: (state, action) => {
+      state.suggestedUsers = action.payload.SuggestedUsers;
+      state.suggestedUserStatus = "fullfilled";
+    },
+    [getSuggestedUser.rejected]: (state) => {
+      state.suggestedUserStatus = "rejected";
+    },
     [likeButtonPressed.fulfilled]: (state, action) => {
-      state.feeds.forEach((each) => {
-        if (each._id === action.payload.postId) {
-          if (state.likedOrUnliked === "like") {
-            each.likes.push({ _id: action.payload.userId });
-          } else {
-            const index = each.likes.findIndex(
-              (item) => item._id === action.payload.userId
-            );
-            each.likes.splice(index, 1);
+      console.log(action);
+      if (action.payload.from === "feeds") {
+        state.feeds.forEach((each) => {
+          if (each._id === action.payload.postId) {
+            if (state.likedOrUnliked === "like") {
+              each.likes.push({ _id: action.payload.userId });
+            } else {
+              const index = each.likes.findIndex(
+                (item) => item._id === action.payload.userId
+              );
+              each.likes.splice(index, 1);
+            }
           }
-        }
-      });
+        });
+      } else {
+        state.suggestedPosts.forEach((each) => {
+          if (each._id === action.payload.postId) {
+            if (state.likedOrUnliked === "like") {
+              each.likes.push({ _id: action.payload.userId });
+            } else {
+              const index = each.likes.findIndex(
+                (item) => item._id === action.payload.userId
+              );
+              each.likes.splice(index, 1);
+            }
+          }
+        });
+      }
     },
     [commentPostButtonClicked.fulfilled]: (state, action) => {
-      state.feeds.forEach((each) => {
-        if (each._id === action.payload.postId) {
-          each.comments.push({
-            _id: action.payload._id,
-            uid: action.payload.userId,
-            text: action.payload.text,
-          });
-        }
-      });
+      if (action.payload.from === "feeds") {
+        state.feeds.forEach((each) => {
+          if (each._id === action.payload.postId) {
+            each.comments.push({
+              _id: action.payload._id,
+              uid: action.payload.userId,
+              text: action.payload.text,
+            });
+          }
+        });
+      } else {
+        state.suggestedPosts.forEach((each) => {
+          if (each._id === action.payload.postId) {
+            each.comments.push({
+              _id: action.payload._id,
+              uid: action.payload.userId,
+              text: action.payload.text,
+            });
+          }
+        });
+      }
     },
   },
 });
