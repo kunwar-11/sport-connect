@@ -64,9 +64,35 @@ export const updateLoggedInUserProfile = createAsyncThunk(
   }
 );
 
+export const followAnyUser = createAsyncThunk(
+  "user/followAnyUser",
+  async ({ userId, from }, { fulfillWithValue, rejectWithValue }) => {
+    try {
+      const { data, status } = await axios.post(
+        `${API_URL}user/follow`,
+        {
+          followingID: userId,
+        },
+        {
+          headers: {
+            authorization: JSON.parse(localStorage?.getItem("loggedInUser"))
+              ?.token,
+          },
+        }
+      );
+      if (status === 201) {
+        console.log(data);
+        return fulfillWithValue({ ...data, from });
+      }
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
 export const unfollowAnyUser = createAsyncThunk(
   "user/unfollowAnyUser",
-  async (userId, { fulfillWithValue, rejectWithValue }) => {
+  async ({ userId, from }, { fulfillWithValue, rejectWithValue }) => {
     try {
       const { data, status } = await axios.post(
         `${API_URL}user/unfollow`,
@@ -81,7 +107,7 @@ export const unfollowAnyUser = createAsyncThunk(
         }
       );
       if (status === 201) {
-        return fulfillWithValue(data.unFollowingID);
+        return fulfillWithValue({ ...data, from });
       }
     } catch (error) {
       return rejectWithValue(error);
@@ -156,9 +182,17 @@ export const userSlice = createSlice({
     [updateLoggedInUserProfile.rejected]: (state) => {
       state.updateProfileStatus = "rejected";
     },
+    [followAnyUser.fulfilled]: (state, action) => {
+      console.log(action);
+      state.following.push({
+        profilePicture: action.payload.followedUser.profilePicture,
+        userName: action.payload.followedUser.userName,
+        _id: action.payload.followedUser._id,
+      });
+    },
     [unfollowAnyUser.fulfilled]: (state, action) => {
       const index = state.following.findIndex(
-        (each) => each._id === action.payload
+        (each) => each._id === action.payload.unFollowingID
       );
       if (index > -1) {
         state.following.splice(index, 1);

@@ -45,7 +45,7 @@ export const Feeds = () => {
           <FeedsPost />
           {state?.suggestedUsers.length > 0 && (
             <h3 className="pb-4 pt-4 pl-4 text-xl text-gray-500 sm:max-w-screen-sm sm:m-auto">
-              Suggested User
+              Suggested Users
             </h3>
           )}
           <SuggestedUsers />

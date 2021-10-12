@@ -1,6 +1,7 @@
 import axios from "axios";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { API_URL } from "../../util";
+import { followAnyUser } from "../user/userSlice";
 const initialState = {
   feeds: null,
   suggestedPosts: null,
@@ -158,11 +159,23 @@ export const feedsSlice = createSlice({
       state.suggestedUserStatus = "pending";
     },
     [getSuggestedUser.fulfilled]: (state, action) => {
-      state.suggestedUsers = action.payload.SuggestedUsers;
+      state.suggestedUsers =
+        action.payload.SuggestedUsers.length > 10
+          ? action.payload.SuggestedUsers.slice(0, 10)
+          : action.payload.SuggestedUsers;
       state.suggestedUserStatus = "fullfilled";
     },
     [getSuggestedUser.rejected]: (state) => {
       state.suggestedUserStatus = "rejected";
+    },
+    [followAnyUser.fulfilled]: (state, action) => {
+      console.log(action);
+      if (!action.payload.from) {
+        const index = state.suggestedUsers.findIndex(
+          (each) => each._id === action.payload.followedUser._id
+        );
+        state.suggestedUsers.splice(index, 1);
+      }
     },
     [likeButtonPressed.fulfilled]: (state, action) => {
       console.log(action);

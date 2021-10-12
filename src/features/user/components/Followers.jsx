@@ -1,30 +1,20 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { Navbar } from "../../../components";
-import { getLoggedInUserDetails, removeUserWhoFollows } from "../userSlice";
+import { removeUserWhoFollows } from "../userSlice";
 
 export const Followers = () => {
   const user = useSelector((state) => state?.user);
   const [status, setStatus] = useState("idle");
+  const [userId, setUserId] = useState("");
   const dispatch = useDispatch();
-  useEffect(() => {
-    if (user?.status === "idle") {
-      (async () => {
-        try {
-          const resp = await dispatch(getLoggedInUserDetails()).unwrap();
-          console.log(resp);
-        } catch (error) {
-          console.log(error?.reponse);
-        }
-      })();
-    }
-  }, [dispatch, user?.status]);
 
   const removeFollower = async (userId) => {
     try {
       setStatus("loading");
+      setUserId(userId);
       const resp = await dispatch(removeUserWhoFollows(userId)).unwrap();
       console.log(resp);
       if (resp) {
@@ -66,7 +56,7 @@ export const Followers = () => {
                 }`}
                 onClick={() => removeFollower(each._id)}
               >
-                {status === "loading" ? (
+                {status === "loading" && userId === each._id ? (
                   <span className="text-gray-400">please wait...</span>
                 ) : (
                   "remove"

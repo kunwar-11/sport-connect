@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
 import { Route, Navigate } from "react-router-dom";
-import axios from "axios";
+
 export const API_URL = "https://api-sport-connect.herokuapp.com/";
 
 export const signUpValidation = (credentials, setError) => {
@@ -100,11 +100,8 @@ export const PrivateRoute = ({ path, ...rest }) => {
   );
 };
 
-export const setupAuthHeaderForServiceCalls = (token) => {
-  if (token) {
-    return (axios.defaults.headers.common["Authorization"] = token);
-  }
-  delete axios.defaults.headers.common["Authorization"];
+export const isFollowing = (arr, id) => {
+  return arr.some((each) => each._id === id);
 };
 
 export const isLiked = (likeArr, userId) => {

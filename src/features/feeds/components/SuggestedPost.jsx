@@ -26,16 +26,18 @@ export const SuggestedPost = () => {
     <div className="sm:max-w-screen-sm sm:m-auto">
       {state?.suggestedPosts.length > 0 &&
         state?.suggestedPosts.map((each) => (
-          <div key={each._id} className="sm:mr-2 sm:ml-2">
+          <div key={each._id} className="sm:mr-2 sm:ml-2 mb-2">
             <div className="flex items-center justify-between pt-2 pl-3 pr-3 pb-2 bg-gray-100">
-              <div className="flex items-center">
-                <img
-                  src={each?.user?.profilePicture}
-                  alt=""
-                  className="rounded-full w-8 mr-3"
-                />
-                <h3>@{each?.user?.userName}</h3>
-              </div>
+              <Link to={`/user/${each.user.userId}`}>
+                <div className="flex items-center">
+                  <img
+                    src={each?.user?.profilePicture}
+                    alt=""
+                    className="rounded-full w-8 mr-3"
+                  />
+                  <h3>@{each?.user?.userName}</h3>
+                </div>
+              </Link>
               <MoreVert />
             </div>
             <div className="bg-gray-100">
@@ -45,14 +47,14 @@ export const SuggestedPost = () => {
                   {each?.description}
                 </p>
               </div>
-              <div className="flex items-center justify-between mr-16 ml-16 sm:mr-32 sm:ml-32">
+              <div className="flex items-center">
                 {isLiked(
                   each.likes,
                   JSON.parse(localStorage?.getItem("loggedInUser"))?.userId
                 ) ? (
                   <button
                     onClick={() => likeUnlikeThisPost(each._id, "unlike")}
-                    className="text-purple-500 font-medium"
+                    className="text-purple-500 font-medium mr-6 ml-3"
                   >
                     liked
                   </button>
@@ -71,14 +73,14 @@ export const SuggestedPost = () => {
                   setShowTextField={setShowTextField}
                 />
               )}
-              <h3 className="ml-3 pb-2 text-center pt-1 sm:pt-3">
+              <h3 className="ml-3 pb-2 pt-1 sm:pt-3">
                 {each?.comments?.length > 0
                   ? `${each?.comments?.length} ${
                       each?.comments?.length > 0 ? "comments" : "comment"
                     }`
                   : ""}
                 <Link to={`post/${each._id}`}>
-                  <span className="pl-10">
+                  <span className="pl-4">
                     {each?.comments?.length > 0 ? "view all commments" : ""}
                   </span>
                 </Link>

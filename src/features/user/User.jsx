@@ -1,26 +1,10 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
 import { Navbar } from "../../components";
 import { ProfileCard, ProfileDetails, UserPost } from "./components";
-import { getLoggedInUserDetails } from "./userSlice";
 
 export const User = () => {
-  const dispatch = useDispatch();
   const user = useSelector((state) => state?.user);
-  useEffect(() => {
-    if (user?.status === "idle") {
-      (async () => {
-        try {
-          const resp = await dispatch(getLoggedInUserDetails()).unwrap();
-          console.log(resp);
-        } catch (error) {
-          console.log(error?.reponse);
-        }
-      })();
-    }
-  }, [dispatch, user?.status]);
-  //user?.firstName && console.log(user);
   return (
     <>
       <Navbar />

@@ -1,5 +1,5 @@
 import React from "react";
 
-export const Post = () => {
+export const CurrentPost = () => {
   return <div>current Post</div>;
 };
