@@ -1,11 +1,11 @@
-import { MoreVert } from "@material-ui/icons";
+import { ArrowRightAlt } from "@material-ui/icons";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { isLiked } from "../../../util";
 import { likeButtonPressed, likedOrUnlikedPost } from "../feedsSlice";
 import { CommentForm } from "./CommentForm";
-
+import ReactTooltip from "react-tooltip";
 export const SuggestedPost = () => {
   const dispatch = useDispatch();
   const state = useSelector((state) => state?.feed);
@@ -38,7 +38,15 @@ export const SuggestedPost = () => {
                   <h3>@{each?.user?.userName}</h3>
                 </div>
               </Link>
-              <MoreVert />
+              <Link to={`post/${each._id}`} state={{ from: "suggested" }}>
+                <ArrowRightAlt
+                  data-tip="React-tooltip"
+                  place="left"
+                  type="light"
+                  effect="solid"
+                />
+              </Link>
+              <ReactTooltip globalEventOff="click">View Post</ReactTooltip>
             </div>
             <div className="bg-gray-100">
               <div className="border-2 border-gray-100">
@@ -74,6 +82,7 @@ export const SuggestedPost = () => {
                 <CommentForm
                   postId={each._id}
                   setShowTextField={setShowTextField}
+                  from={"suggested"}
                 />
               )}
               <h3 className="ml-3 pb-2 pt-1 sm:pt-3">

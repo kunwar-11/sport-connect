@@ -1,4 +1,3 @@
-import { MoreHoriz, MoreVert } from "@material-ui/icons";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
@@ -129,7 +128,6 @@ export const CurrentPost = () => {
                   <h3>@{post.currentPost?.uid?.userName}</h3>
                 </div>
               </Link>
-              <MoreVert />
             </div>
             <div className="bg-gray-100">
               <div className="border-2 border-gray-100">
@@ -204,13 +202,16 @@ export const CurrentPost = () => {
                       </Link>
                       <p>{each.text}</p>
                     </div>
-                    <div className="mr-3">
+                    <div className="mr-3 flex items-center">
+                      {each?.user?._id ===
+                        JSON.parse(localStorage?.getItem("loggedInUser"))
+                          ?.userId && <buttton className="mr-3">edit</buttton>}
                       {(post?.currentPost?.uid._id ===
                         JSON.parse(localStorage?.getItem("loggedInUser"))
                           ?.userId ||
                         each.user._id ===
                           JSON.parse(localStorage?.getItem("loggedInUser"))
-                            ?.userId) && <MoreHoriz />}
+                            ?.userId) && <buttton>delete</buttton>}
                     </div>
                   </div>
                 ))}

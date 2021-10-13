@@ -20,6 +20,7 @@
     "react-redux": "^7.2.5",
     "react-router-dom": "^6.0.0-beta.0",
     "react-scripts": "4.0.3",
+    "react-tooltip": "^4.2.21",
     "react-user-profile": "^1.0.3",
     "tailwind-scrollbar-hide": "^1.0.3"
   },

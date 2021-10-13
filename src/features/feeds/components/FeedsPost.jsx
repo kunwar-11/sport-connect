@@ -1,10 +1,11 @@
-import { MoreVert } from "@material-ui/icons";
+import { ArrowRightAlt } from "@material-ui/icons";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { isLiked } from "../../../util";
 import { likeButtonPressed, likedOrUnlikedPost } from "../feedsSlice";
 import { CommentForm } from "./CommentForm";
+import ReactTooltip from "react-tooltip";
 export const FeedsPost = () => {
   const dispatch = useDispatch();
   const state = useSelector((state) => state?.feed);
@@ -40,7 +41,17 @@ export const FeedsPost = () => {
                   <h3>@{each?.user?.userName}</h3>
                 </div>
               </Link>
-              <MoreVert />
+              <Link
+                to={`post/${each._id}`}
+                state={{ from: "suggested" }}
+                data-tip="React-tooltip"
+                place="left"
+                type="light"
+                effect="solid"
+              >
+                <ArrowRightAlt />
+              </Link>
+              <ReactTooltip globalEventOff="click">View Post</ReactTooltip>
             </div>
             <div className="bg-gray-100">
               <div className="border-2 border-gray-100">
