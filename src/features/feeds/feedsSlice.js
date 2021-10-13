@@ -77,7 +77,7 @@ export const getSuggestedUser = createAsyncThunk(
 
 export const likeButtonPressed = createAsyncThunk(
   "feed/likeButtonPressed",
-  async ({ postId, from }, { fulfillWithValue, rejectWithValue }) => {
+  async ({ postId, from, directed }, { fulfillWithValue, rejectWithValue }) => {
     try {
       const { data, status } = await axios.post(
         `${API_URL}post/${postId}/updateLike`,
@@ -91,7 +91,7 @@ export const likeButtonPressed = createAsyncThunk(
       );
       if (status === 201) {
         console.log(data);
-        return fulfillWithValue({ ...data, from });
+        return fulfillWithValue({ ...data, from, directed });
       }
     } catch (error) {
       return rejectWithValue(error);
@@ -131,6 +131,61 @@ export const feedsSlice = createSlice({
   reducers: {
     likedOrUnlikedPost: (state, action) => {
       state.likedOrUnliked = action.payload;
+    },
+    likedFromCurrent: (state, action) => {
+      console.log(action?.payload);
+      if (action?.payload.directed === "feeds") {
+        state.feeds.forEach((each) => {
+          if (each._id === action.payload.postId) {
+            if (action.payload.type === "like") {
+              each.likes.push({ _id: action.payload.userId });
+            } else {
+              const index = each.likes.findIndex(
+                (item) => item._id === action.payload.userId
+              );
+              each.likes.splice(index, 1);
+            }
+          }
+        });
+      } else if (action.payload.directed === "suggested") {
+        console.log("here");
+        state.suggestedPosts.forEach((each) => {
+          if (each._id === action.payload.postId) {
+            if (action.payload.type === "like") {
+              each.likes.push({ _id: action.payload.userId });
+            } else {
+              const index = each.likes.findIndex(
+                (item) => item._id === action.payload.userId
+              );
+              each.likes.splice(index, 1);
+            }
+          }
+        });
+      }
+    },
+    commentFromCurrentPost: (state, action) => {
+      console.log(action);
+      if (action.payload.directed === "feeds") {
+        state.feeds.forEach((each) => {
+          if (action.payload.resp.postId === each._id) {
+            each.comments.push({
+              _id: action.payload.resp._id,
+              uid: action.payload.resp.userId,
+              text: action.payload.resp.text,
+            });
+          }
+        });
+      } else if (action.payload.directed === "suggested") {
+        state.suggestedPosts.forEach((each) => {
+          if (action.payload.resp.postId === each._id) {
+            each.comments.push({
+              _id: action.payload.resp._id,
+              uid: action.payload.resp.userId,
+              text: action.payload.resp.text,
+            });
+          }
+        });
+      }
     },
   },
   extraReducers: {
@@ -179,32 +234,34 @@ export const feedsSlice = createSlice({
     },
     [likeButtonPressed.fulfilled]: (state, action) => {
       console.log(action);
-      if (action.payload.from === "feeds") {
-        state.feeds.forEach((each) => {
-          if (each._id === action.payload.postId) {
-            if (state.likedOrUnliked === "like") {
-              each.likes.push({ _id: action.payload.userId });
-            } else {
-              const index = each.likes.findIndex(
-                (item) => item._id === action.payload.userId
-              );
-              each.likes.splice(index, 1);
+      if (action.payload.from !== "currentPost") {
+        if (action.payload.from === "feeds") {
+          state.feeds.forEach((each) => {
+            if (each._id === action.payload.postId) {
+              if (state.likedOrUnliked === "like") {
+                each.likes.push({ _id: action.payload.userId });
+              } else {
+                const index = each.likes.findIndex(
+                  (item) => item._id === action.payload.userId
+                );
+                each.likes.splice(index, 1);
+              }
             }
-          }
-        });
-      } else {
-        state.suggestedPosts.forEach((each) => {
-          if (each._id === action.payload.postId) {
-            if (state.likedOrUnliked === "like") {
-              each.likes.push({ _id: action.payload.userId });
-            } else {
-              const index = each.likes.findIndex(
-                (item) => item._id === action.payload.userId
-              );
-              each.likes.splice(index, 1);
+          });
+        } else {
+          state.suggestedPosts.forEach((each) => {
+            if (each._id === action.payload.postId) {
+              if (state.likedOrUnliked === "like") {
+                each.likes.push({ _id: action.payload.userId });
+              } else {
+                const index = each.likes.findIndex(
+                  (item) => item._id === action.payload.userId
+                );
+                each.likes.splice(index, 1);
+              }
             }
-          }
-        });
+          });
+        }
       }
     },
     [commentPostButtonClicked.fulfilled]: (state, action) => {
@@ -218,7 +275,7 @@ export const feedsSlice = createSlice({
             });
           }
         });
-      } else {
+      } else if (action.payload.from === "suggested") {
         state.suggestedPosts.forEach((each) => {
           if (each._id === action.payload.postId) {
             each.comments.push({
@@ -233,6 +290,7 @@ export const feedsSlice = createSlice({
   },
 });
 
-export const { likedOrUnlikedPost } = feedsSlice.actions;
+export const { likedOrUnlikedPost, likedFromCurrent, commentFromCurrentPost } =
+  feedsSlice.actions;
 
 export default feedsSlice.reducer;

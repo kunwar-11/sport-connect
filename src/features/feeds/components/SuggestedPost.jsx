@@ -59,7 +59,10 @@ export const SuggestedPost = () => {
                     liked
                   </button>
                 ) : (
-                  <button onClick={() => likeUnlikeThisPost(each._id, "like")}>
+                  <button
+                    onClick={() => likeUnlikeThisPost(each._id, "like")}
+                    className="mr-6 ml-3"
+                  >
                     like
                   </button>
                 )}
@@ -79,7 +82,7 @@ export const SuggestedPost = () => {
                       each?.comments?.length > 0 ? "comments" : "comment"
                     }`
                   : ""}
-                <Link to={`post/${each._id}`}>
+                <Link to={`post/${each._id}`} state={{ from: "suggested" }}>
                   <span className="pl-4">
                     {each?.comments?.length > 0 ? "view all commments" : ""}
                   </span>

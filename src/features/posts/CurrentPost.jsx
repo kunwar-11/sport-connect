@@ -1,18 +1,28 @@
-import { MoreVert } from "@material-ui/icons";
+import { MoreHoriz, MoreVert } from "@material-ui/icons";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
-import { Link, useParams } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import { Navbar } from "../../components";
 import { isLiked } from "../../util";
-import { getCurrentPost, resetState } from "./postSlice";
-import { likeButtonPressed, likedOrUnlikedPost } from "../feeds/feedsSlice";
+import { getCurrentPost, likedOrUnlikedPost, resetState } from "./postSlice";
+import {
+  commentFromCurrentPost,
+  commentPostButtonClicked,
+  getSuggestedPosts,
+  getSuggestedUser,
+  getUserFeeds,
+  likeButtonPressed,
+  likedFromCurrent,
+} from "../feeds/feedsSlice";
 export const CurrentPost = () => {
   const post = useSelector((state) => state?.post);
+  const posts = useSelector((state) => state?.feed);
   const [comment, setComment] = useState("");
-  console.log(post);
+  const [error, setError] = useState();
   const dispatch = useDispatch();
   const { postId } = useParams();
+  const { state } = useLocation();
   useEffect(() => {
     if (post?.status === "idle") {
       (async () => {
@@ -27,6 +37,33 @@ export const CurrentPost = () => {
   }, [dispatch, post?.status, postId]);
 
   useEffect(() => {
+    if (
+      posts?.feedStatus === "idle" &&
+      posts?.suggestedPostStatus === "idle" &&
+      posts?.suggestedUserStatus
+    ) {
+      (async () => {
+        try {
+          const resp = await dispatch(getUserFeeds()).unwrap();
+          if (resp) {
+            const resp1 = await dispatch(getSuggestedPosts()).unwrap();
+            if (resp1) {
+              console.log(resp1);
+              await dispatch(getSuggestedUser()).unwrap();
+            }
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      })();
+    }
+  }, [
+    dispatch,
+    posts?.feedStatus,
+    posts?.suggestedPostStatus,
+    posts?.suggestedUserStatus,
+  ]);
+  useEffect(() => {
     return () => dispatch(resetState());
   }, [dispatch]);
 
@@ -34,20 +71,52 @@ export const CurrentPost = () => {
     try {
       dispatch(likedOrUnlikedPost(type));
       const resp = await dispatch(
-        likeButtonPressed({ postId, from: "feeds" })
+        likeButtonPressed({
+          postId,
+          from: "currentPost",
+          directed: state?.from,
+        })
       ).unwrap();
       if (resp) {
-        console.log(resp);
+        console.log({ ...resp, type });
+        dispatch(likedFromCurrent({ ...resp, type }));
       }
     } catch (error) {
       console.log(error);
     }
   };
+
+  const postComment = async (e) => {
+    e.preventDefault();
+    if (comment.trim()) {
+      try {
+        const resp = await dispatch(
+          commentPostButtonClicked({
+            text: comment,
+            postId,
+            from: "currentPost",
+            directed: state?.from,
+          })
+        ).unwrap();
+        if (resp) {
+          console.log({ resp, directed: state?.from });
+          setComment("");
+          dispatch(commentFromCurrentPost({ resp, directed: state?.from }));
+        }
+        setError("");
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      setError("cannot post empty comment!");
+    }
+  };
+
   return (
     <>
       <Navbar />
       <div className="sm:max-w-screen-sm sm:m-auto">
-        {post.currentPost && (
+        {post.currentPost && posts?.feeds && posts?.suggestedPosts && (
           <div key={post.currentPost._id} className="sm:mr-2 sm:ml-2 mb-2">
             <div className="flex items-center justify-between pt-2 pl-3 pr-3 pb-2 bg-gray-100">
               <Link to={`/user/${post.currentPost.uid?._id}`}>
@@ -98,7 +167,7 @@ export const CurrentPost = () => {
                 )}
               </div>
               <form
-                //onSubmit={postComment}
+                onSubmit={postComment}
                 className="w-full flex items-center justify-between bg-transparent pl-4 pr-4"
               >
                 <div className="pt-4 pb-1 mb-2 flex-grow mr-3">
@@ -108,9 +177,8 @@ export const CurrentPost = () => {
                     onChange={(e) => setComment(e.target.value)}
                     className="text-black bg-transparent border-b-2 border-purple-500 w-full"
                     placeholder="enter your comment"
-                    //ref={inputRef}
                   />
-                  {/* <small className=" text-red-400 block pr-2">{error}</small> */}
+                  <small className=" text-red-400 block pr-2">{error}</small>
                 </div>
                 <button
                   type="submit"
@@ -123,21 +191,26 @@ export const CurrentPost = () => {
                 {post?.currentPost?.comments.map((each) => (
                   <div
                     key={each._id}
-                    className="flex items-center  justify-between ml-3 mr-3 sm:ml-12 sm:mr-12 pt-4 pb-3 "
+                    className="flex items-center justify-between"
                   >
-                    <div className="flex items-center">
-                      <img
-                        src={each?.user?.profilePicture}
-                        alt=""
-                        className="rounded-full w-8 mr-3"
-                      />
-                      <p>{each?.user?.userName}</p>
+                    <div className="flex  ml-3 py-2">
+                      <Link className="flex" to={`/user/${each.user._id}`}>
+                        <img
+                          src={each.user.profilePicture}
+                          alt=""
+                          className="w-6 h-6 rounded-full mr-2"
+                        />
+                        <p className="mr-4 font-medium">{each.user.userName}</p>
+                      </Link>
+                      <p>{each.text}</p>
                     </div>
-                    <div className="flex items-center">
-                      <h4 className="text-left mr-6">{each.text}</h4>
-                      {each.user._id ===
+                    <div className="mr-3">
+                      {(post?.currentPost?.uid._id ===
                         JSON.parse(localStorage?.getItem("loggedInUser"))
-                          ?.userId && <>E D</>}
+                          ?.userId ||
+                        each.user._id ===
+                          JSON.parse(localStorage?.getItem("loggedInUser"))
+                            ?.userId) && <MoreHoriz />}
                     </div>
                   </div>
                 ))}

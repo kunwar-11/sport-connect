@@ -1,9 +1,14 @@
 import axios from "axios";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { API_URL } from "../../util";
+import {
+  commentPostButtonClicked,
+  likeButtonPressed,
+} from "../feeds/feedsSlice";
 const initialState = {
   currentPost: null,
   status: "idle",
+  likedOrUnliked: "idle",
 };
 
 export const getCurrentPost = createAsyncThunk(
@@ -25,13 +30,17 @@ export const getCurrentPost = createAsyncThunk(
     }
   }
 );
-
 export const postSlice = createSlice({
   name: "post",
   initialState,
   reducers: {
     resetState: (state) => {
       state.status = "idle";
+      state.currentPost = null;
+      state.likedOrUnliked = "idle";
+    },
+    likedOrUnlikedPost: (state, action) => {
+      state.likedOrUnliked = action.payload;
     },
   },
   extraReducers: {
@@ -45,8 +54,39 @@ export const postSlice = createSlice({
     [getCurrentPost.rejected]: (state) => {
       state.status = "rejected";
     },
+    [likeButtonPressed.fulfilled]: (state, action) => {
+      console.log(action);
+      if (action.payload.from === "currentPost") {
+        if (state.likedOrUnliked === "like") {
+          state.currentPost.likes.push({
+            _id: action.payload.userId,
+          });
+          if (action.payload.directed === "feeds") {
+          } else {
+          }
+        } else {
+          const index = state.currentPost.likes.findIndex(
+            (each) => each._id === action.payload.userId
+          );
+          console.log(index);
+          state.currentPost.likes.splice(index, 1);
+        }
+      }
+    },
+    [commentPostButtonClicked.fulfilled]: (state, action) => {
+      console.log("postSlice", action.payload);
+      state?.currentPost?.comments.push({
+        _id: action.payload._id,
+        text: action.payload.text,
+        user: {
+          profilePicture: action.payload.profilePicture,
+          _id: action.payload.userId,
+          userName: action.payload.userName,
+        },
+      });
+    },
   },
 });
 
-export const { resetState } = postSlice.actions;
+export const { resetState, likedOrUnlikedPost } = postSlice.actions;
 export default postSlice.reducer;
