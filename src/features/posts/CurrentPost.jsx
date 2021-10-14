@@ -4,10 +4,16 @@ import { useSelector } from "react-redux";
 import { Link, useLocation, useParams } from "react-router-dom";
 import { Navbar } from "../../components";
 import { isLiked } from "../../util";
-import { getCurrentPost, likedOrUnlikedPost, resetState } from "./postSlice";
+import {
+  deleteCommentButtonPressed,
+  getCurrentPost,
+  likedOrUnlikedPost,
+  resetState,
+} from "./postSlice";
 import {
   commentFromCurrentPost,
   commentPostButtonClicked,
+  deleteCommentFromCurrentPost,
   getSuggestedPosts,
   getSuggestedUser,
   getUserFeeds,
@@ -111,6 +117,21 @@ export const CurrentPost = () => {
     }
   };
 
+  const deleteComment = async (commentId) => {
+    try {
+      const resp = await dispatch(
+        deleteCommentButtonPressed({ commentId, postId, directed: state?.from })
+      ).unwrap();
+      if (resp) {
+        console.log(resp);
+        dispatch(
+          deleteCommentFromCurrentPost({ ...resp, directed: state?.from })
+        );
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <>
       <Navbar />
@@ -193,25 +214,24 @@ export const CurrentPost = () => {
                   >
                     <div className="flex  ml-3 py-2">
                       <Link className="flex" to={`/user/${each.user._id}`}>
-                        <img
-                          src={each.user.profilePicture}
-                          alt=""
-                          className="w-6 h-6 rounded-full mr-2"
-                        />
-                        <p className="mr-4 font-medium">{each.user.userName}</p>
+                        <p className="mr-1 font-medium">{each.user.userName}</p>
                       </Link>
-                      <p>{each.text}</p>
+                      <p className="ml-3">{each.text}</p>
                     </div>
                     <div className="mr-3 flex items-center">
-                      {each?.user?._id ===
-                        JSON.parse(localStorage?.getItem("loggedInUser"))
-                          ?.userId && <buttton className="mr-3">edit</buttton>}
                       {(post?.currentPost?.uid._id ===
                         JSON.parse(localStorage?.getItem("loggedInUser"))
                           ?.userId ||
                         each.user._id ===
                           JSON.parse(localStorage?.getItem("loggedInUser"))
-                            ?.userId) && <buttton>delete</buttton>}
+                            ?.userId) && (
+                        <button
+                          onClick={() => deleteComment(each._id)}
+                          className="ml-2"
+                        >
+                          delete
+                        </button>
+                      )}
                     </div>
                   </div>
                 ))}

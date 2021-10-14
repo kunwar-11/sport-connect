@@ -1,10 +1,9 @@
 import axios from "axios";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { API_URL } from "../../util";
-import {
-  commentPostButtonClicked,
-  likeButtonPressed,
-} from "../feeds/feedsSlice";
+import { likeButtonPressed } from "../feeds/feedsSlice";
+import { commentPostButtonClicked } from "../feeds/feedsSlice";
+
 const initialState = {
   currentPost: null,
   status: "idle",
@@ -28,6 +27,30 @@ export const getCurrentPost = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error);
     }
+  }
+);
+
+export const deleteCommentButtonPressed = createAsyncThunk(
+  "post/deleteCommentButtonPressed",
+  async (
+    { postId, commentId, directed },
+    { fulfillWithValue, rejectWithValue }
+  ) => {
+    try {
+      const { data, status } = await axios.delete(
+        `${API_URL}post/${postId}/${commentId}`,
+        {
+          headers: {
+            authorization: JSON.parse(localStorage?.getItem("loggedInUser"))
+              ?.token,
+          },
+        }
+      );
+      if (status === 201) {
+        console.log({ ...data, directed });
+        return fulfillWithValue({ ...data, directed });
+      }
+    } catch (error) {}
   }
 );
 export const postSlice = createSlice({
@@ -84,6 +107,12 @@ export const postSlice = createSlice({
           userName: action.payload.userName,
         },
       });
+    },
+    [deleteCommentButtonPressed.fulfilled]: (state, action) => {
+      const index = state.currentPost.comments.findIndex(
+        (each) => each._id === action.payload.commentId
+      );
+      state.currentPost.comments.splice(index, 1);
     },
   },
 });

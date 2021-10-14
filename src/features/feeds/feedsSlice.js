@@ -187,6 +187,28 @@ export const feedsSlice = createSlice({
         });
       }
     },
+    deleteCommentFromCurrentPost: (state, action) => {
+      console.log(action);
+      if (action.payload.directed === "feeds") {
+        state?.feeds.forEach((each) => {
+          if (each._id === action.payload.postId) {
+            const index = each.comments.findIndex(
+              (item) => item._id === action.payload.commentId
+            );
+            each.comments.splice(index, 1);
+          }
+        });
+      } else if (action.payload.directed === "suggested") {
+        state?.suggestedPosts.forEach((each) => {
+          if (each._id === action.payload.postId) {
+            const index = each.comments.findIndex(
+              (item) => item._id === action.payload.commentId
+            );
+            each.comments.splice(index, 1);
+          }
+        });
+      }
+    },
   },
   extraReducers: {
     [getUserFeeds.pending]: (state) => {
@@ -290,7 +312,11 @@ export const feedsSlice = createSlice({
   },
 });
 
-export const { likedOrUnlikedPost, likedFromCurrent, commentFromCurrentPost } =
-  feedsSlice.actions;
+export const {
+  likedOrUnlikedPost,
+  likedFromCurrent,
+  commentFromCurrentPost,
+  deleteCommentFromCurrentPost,
+} = feedsSlice.actions;
 
 export default feedsSlice.reducer;

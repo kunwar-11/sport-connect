@@ -43,7 +43,7 @@ export const FeedsPost = () => {
               </Link>
               <Link
                 to={`post/${each._id}`}
-                state={{ from: "suggested" }}
+                state={{ from: "feeds" }}
                 data-tip="React-tooltip"
                 place="left"
                 type="light"
