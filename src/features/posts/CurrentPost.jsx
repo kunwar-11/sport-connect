@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
-import { Link, useLocation, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { Navbar } from "../../components";
 import { isLiked } from "../../util";
 import {
@@ -20,6 +20,8 @@ import {
   likeButtonPressed,
   likedFromCurrent,
 } from "../feeds/feedsSlice";
+import { Delete } from "@material-ui/icons";
+import { removePostButtonClicked } from "../user/userSlice";
 export const CurrentPost = () => {
   const post = useSelector((state) => state?.post);
   const posts = useSelector((state) => state?.feed);
@@ -28,6 +30,7 @@ export const CurrentPost = () => {
   const dispatch = useDispatch();
   const { postId } = useParams();
   const { state } = useLocation();
+  const navigate = useNavigate();
   useEffect(() => {
     if (post?.status === "idle") {
       (async () => {
@@ -132,6 +135,19 @@ export const CurrentPost = () => {
       console.log(error);
     }
   };
+
+  const deletePost = async () => {
+    try {
+      const resp = await dispatch(removePostButtonClicked(postId)).unwrap();
+      if (resp) {
+        console.log(resp);
+        navigate("/user");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <>
       <Navbar />
@@ -149,6 +165,10 @@ export const CurrentPost = () => {
                   <h3>@{post.currentPost?.uid?.userName}</h3>
                 </div>
               </Link>
+              {post?.currentPost?.uid?._id ===
+                JSON.parse(localStorage?.getItem("loggedInUser"))?.userId && (
+                <Delete onClick={deletePost} />
+              )}
             </div>
             <div className="bg-gray-100">
               <div className="border-2 border-gray-100">

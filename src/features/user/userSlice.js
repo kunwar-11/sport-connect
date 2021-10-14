@@ -140,6 +140,30 @@ export const removeUserWhoFollows = createAsyncThunk(
   }
 );
 
+export const removePostButtonClicked = createAsyncThunk(
+  "user/removePostButtonClicked",
+  async (postId, { fulfillWithValue, rejectWithValue }) => {
+    try {
+      const { data, status } = await axios.post(
+        `${API_URL}user/posts/${postId}`,
+        {},
+        {
+          headers: {
+            authorization: JSON.parse(localStorage?.getItem("loggedInUser"))
+              ?.token,
+          },
+        }
+      );
+      if (status === 201) {
+        console.log(data);
+        return fulfillWithValue(data);
+      }
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
 export const userSlice = createSlice({
   name: "user",
   initialState,
@@ -205,6 +229,13 @@ export const userSlice = createSlice({
       if (index > -1) {
         state.followers.splice(index, 1);
       }
+    },
+    [removePostButtonClicked.fulfilled]: (state, action) => {
+      console.log(action);
+      const index = state?.posts.forEach(
+        (each) => each._id === action.payload.postId
+      );
+      state?.posts.splice(index, 1);
     },
   },
 });

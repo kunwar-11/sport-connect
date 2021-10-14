@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { Routes, Route } from "react-router-dom";
-import { CurrentUser } from "./components";
+import { CreatePost, CurrentUser } from "./components";
 import {
   EditProfile,
   Feeds,
@@ -43,6 +43,7 @@ function App() {
         <PrivateRoute path="/user/following" element={<Following />} />
         <PrivateRoute path="/user/followers" element={<Followers />} />
         <PrivateRoute path="/post/:postId" element={<CurrentPost />} />
+        <PrivateRoute path="/createpost" element={<CreatePost />} />
       </Routes>
     </div>
   );

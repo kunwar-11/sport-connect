@@ -1,4 +1,8 @@
-import { Notifications, SearchOutlined } from "@material-ui/icons";
+import {
+  Notifications,
+  SearchOutlined,
+  AddAPhotoOutlined,
+} from "@material-ui/icons";
 import React from "react";
 import { Link } from "react-router-dom";
 
@@ -26,6 +30,13 @@ export const Navbar = () => {
         <div className="sm:hidden cursor-pointer">
           <SearchOutlined style={{ color: "white", marginRight: "0.5rem" }} />
         </div>
+        <Link to="/createpost">
+          <div>
+            <AddAPhotoOutlined
+              style={{ color: "white", marginRight: "0.5rem" }}
+            />
+          </div>
+        </Link>
         <Link to="/notification">
           <div>
             <Notifications style={{ color: "white", marginRight: "0.5rem" }} />
