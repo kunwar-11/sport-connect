@@ -7,7 +7,9 @@ export const PreLoader = () => {
   return (
     <div className="flex justify-center items-center h-screen">
       <div className={`${circleCommonClasses} mr-1 animate-bounce`}></div>
+      <div className={`${circleCommonClasses} mr-1 animate-bounce100`}></div>
       <div className={`${circleCommonClasses} mr-1 animate-bounce200`}></div>
+      <div className={`${circleCommonClasses} mr-1 animate-bounce300`}></div>
       <div className={`${circleCommonClasses} animate-bounce400`}></div>
     </div>
   );

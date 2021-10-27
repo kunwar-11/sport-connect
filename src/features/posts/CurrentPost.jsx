@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
-import { Navbar } from "../../components";
+import { Navbar, PreLoader } from "../../components";
 import { isLiked } from "../../util";
 import {
   deleteCommentButtonPressed,
@@ -151,6 +151,14 @@ export const CurrentPost = () => {
   return (
     <>
       <Navbar />
+      {posts?.feedStatus === "idle" ||
+      posts?.suggestedPostStatus === "idle" ||
+      posts?.feedStatus === "loading" ||
+      posts?.suggestedPostStatus === "loading" ||
+      post?.status === "idle" ||
+      post?.status === "loading" ? (
+        <PreLoader />
+      ) : null}
       <div className="sm:max-w-screen-sm sm:m-auto">
         {post.currentPost && posts?.feeds && posts?.suggestedPosts && (
           <div key={post.currentPost._id} className="sm:mr-2 sm:ml-2 mb-2">

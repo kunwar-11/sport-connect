@@ -3,8 +3,13 @@ import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
+import { PreLoader } from ".";
 import { UserPost } from "../features/user/components";
-import { followAnyUser, unfollowAnyUser } from "../features/user/userSlice";
+import {
+  followAnyUser,
+  getLoggedInUserDetails,
+  unfollowAnyUser,
+} from "../features/user/userSlice";
 import { API_URL, isFollowing } from "../util";
 import { Navbar } from "./Navbar";
 
@@ -29,6 +34,18 @@ export const CurrentUser = () => {
       }
     })();
   }, [userId]);
+  useEffect(() => {
+    if (loggedInUser?.status === "idle") {
+      (async () => {
+        try {
+          const resp = await dispatch(getLoggedInUserDetails()).unwrap();
+          console.log(resp);
+        } catch (error) {
+          console.log(error?.reponse);
+        }
+      })();
+    }
+  }, [dispatch, loggedInUser?.status]);
   const unfollowUser = async () => {
     try {
       setUnFollowState("loading");
@@ -78,6 +95,11 @@ export const CurrentUser = () => {
   return (
     <>
       <Navbar />
+      {!user ||
+      loggedInUser?.status === "idle" ||
+      loggedInUser?.status === "loading" ? (
+        <PreLoader />
+      ) : null}
       <div className="sm:max-w-screen-sm sm:m-auto">
         {user && loggedInUser?.following && (
           <div className="flex flex-col sm:m-auto ">
