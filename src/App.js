@@ -1,6 +1,4 @@
-import React, { useEffect } from "react";
-import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
+import React from "react";
 import { Routes, Route } from "react-router-dom";
 import { CreatePost, CurrentUser } from "./components";
 import {
@@ -13,24 +11,9 @@ import {
   User,
   CurrentPost,
 } from "./features";
-import { getLoggedInUserDetails } from "./features/user/userSlice";
 import { PrivateRoute } from "./util";
 
 function App() {
-  const dispatch = useDispatch();
-  const user = useSelector((state) => state?.user);
-  useEffect(() => {
-    if (user?.status === "idle") {
-      (async () => {
-        try {
-          const resp = await dispatch(getLoggedInUserDetails()).unwrap();
-          console.log(resp);
-        } catch (error) {
-          console.log(error?.reponse);
-        }
-      })();
-    }
-  }, [dispatch, user?.status]);
   return (
     <div className="App">
       <Routes>

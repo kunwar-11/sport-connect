@@ -1,16 +1,27 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { Navbar } from "../../../components";
-import { removeUserWhoFollows } from "../userSlice";
+import { Navbar, PreLoader } from "../../../components";
+import { removeUserWhoFollows, getLoggedInUserDetails } from "../userSlice";
 
 export const Followers = () => {
   const user = useSelector((state) => state?.user);
   const [status, setStatus] = useState("idle");
   const [userId, setUserId] = useState("");
   const dispatch = useDispatch();
-
+  useEffect(() => {
+    if (user?.status === "idle") {
+      (async () => {
+        try {
+          const resp = await dispatch(getLoggedInUserDetails()).unwrap();
+          console.log(resp);
+        } catch (error) {
+          console.log(error?.reponse);
+        }
+      })();
+    }
+  }, [dispatch, user?.status]);
   const removeFollower = async (userId) => {
     try {
       setStatus("loading");
@@ -29,6 +40,9 @@ export const Followers = () => {
   return (
     <>
       <Navbar />
+      {user?.status === "idle" || user?.status === "loading" ? (
+        <PreLoader />
+      ) : null}
       <div className="sm:max-w-screen-sm sm:m-auto">
         <h1 className="text-3xl text-center mb-3">Followers</h1>
         {user?.followers &&

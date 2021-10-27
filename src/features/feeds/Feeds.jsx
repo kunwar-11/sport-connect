@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Navbar } from "../../components";
+import { Navbar, PreLoader } from "../../components";
 import { FeedsPost, SuggestedPost, SuggestedUsers } from "./components";
 import {
   getSuggestedPosts,
@@ -40,6 +40,14 @@ export const Feeds = () => {
   return (
     <div>
       <Navbar />
+      {state?.feedStatus === "idle" ||
+      state?.suggestedPostStatus === "idle" ||
+      state?.suggestedUserStatus === "idle" ||
+      state?.feedStatus === "loading" ||
+      state?.suggestedPostStatus === "loading" ||
+      state?.suggestedUserStatus === "loading" ? (
+        <PreLoader />
+      ) : null}
       {state?.feeds && state?.suggestedUsers && state?.suggestedPosts && (
         <>
           <FeedsPost />

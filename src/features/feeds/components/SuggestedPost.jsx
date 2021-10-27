@@ -51,7 +51,7 @@ export const SuggestedPost = () => {
             <div className="bg-gray-100">
               <div className="border-2 border-gray-100">
                 <img src={each?.media} alt="" className="w-full h-auto" />
-                <p className="text-lg font-medium mt-2 mb-2 ml-3">
+                <p className="font-medium mt-2 mb-2 ml-3">
                   {each?.description}
                 </p>
               </div>

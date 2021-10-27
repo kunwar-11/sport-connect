@@ -177,7 +177,7 @@ export const CurrentPost = () => {
                   alt=""
                   className="w-full h-auto"
                 />
-                <p className=" font-medium mt-2 mb-2 ml-3">
+                <p className=" font-medium mt-2 mb-2 ml-3 mr-3">
                   {post.currentPost?.description}
                 </p>
               </div>

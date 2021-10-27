@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 
 export const Navbar = () => {
   return (
-    <nav className="flex flex-row justify-between bg-purple-500 px-5 sm:px-8 py-4 shadow-xl sticky top-0 left-0 mb-6 rounded-b-md items-center z-20">
+    <nav className="flex flex-row justify-between bg-purple-500 px-5 sm:px-8 py-4 shadow-xl sticky top-0 left-0 mb-3 rounded-b-md items-center z-20">
       <div className="cursor-pointer">
         <Link to="/">
           <h2 className="font-bold text-xl sm:text-2xl text-white">
